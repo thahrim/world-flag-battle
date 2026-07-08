@@ -1,25 +1,55 @@
 const defaultTeams = [
-  { code: "pt", flagCode: "pt", name: "Portugal", total: 48, supporters: 13, last: "RimZ says Ronaldo forever" },
-  { code: "br", flagCode: "br", name: "Brazil", total: 42, supporters: 11, last: "Joga bonito" },
-  { code: "ar", flagCode: "ar", name: "Argentina", total: 39, supporters: 9, last: "Vamos!" },
-  { code: "fr", flagCode: "fr", name: "France", total: 31, supporters: 7, last: "Allez les Bleus" },
-  { code: "ca", flagCode: "ca", name: "Canada", total: 27, supporters: 8, last: "Toronto is showing up" },
-  { code: "bd", flagCode: "bd", name: "Bangladesh", total: 22, supporters: 6, last: "Bangladesh on the board" },
-  { code: "ma", flagCode: "ma", name: "Morocco", total: 18, supporters: 4, last: "Atlas Lions energy" },
-  { code: "jp", flagCode: "jp", name: "Japan", total: 16, supporters: 4, last: "Samurai Blue" },
-  { code: "de", flagCode: "de", name: "Germany", total: 15, supporters: 3, last: "Never count them out" },
-  { code: "es", flagCode: "es", name: "Spain", total: 13, supporters: 3, last: "La Roja" },
-  { code: "gb", flagCode: "gb", name: "United Kingdom", total: 12, supporters: 3, last: "It might be coming home" },
-  { code: "nl", flagCode: "nl", name: "Netherlands", total: 9, supporters: 2, last: "Orange wave" },
-  { code: "mx", flagCode: "mx", name: "Mexico", total: 8, supporters: 2, last: "Vamos México" },
-  { code: "us", flagCode: "us", name: "United States", total: 7, supporters: 2, last: "USA boost" },
-  { code: "it", flagCode: "it", name: "Italy", total: 6, supporters: 1, last: "Azzurri" },
-  { code: "kr", flagCode: "kr", name: "South Korea", total: 5, supporters: 1, last: "Red Devils" },
-  { code: "ng", flagCode: "ng", name: "Nigeria", total: 4, supporters: 1, last: "Super Eagles" },
-  { code: "eg", flagCode: "eg", name: "Egypt", total: 3, supporters: 1, last: "Pharaohs" }
+  { code: "pt", flagCode: "pt", name: "Portugal", group: "K", total: 48, supporters: 13, last: "RimZ says Ronaldo forever" },
+  { code: "br", flagCode: "br", name: "Brazil", group: "C", total: 44, supporters: 12, last: "Joga bonito" },
+  { code: "ar", flagCode: "ar", name: "Argentina", group: "J", total: 42, supporters: 11, last: "Vamos!" },
+  { code: "fr", flagCode: "fr", name: "France", group: "I", total: 39, supporters: 10, last: "Allez les Bleus" },
+  { code: "es", flagCode: "es", name: "Spain", group: "H", total: 36, supporters: 9, last: "La Roja" },
+  { code: "gb-eng", flagCode: "gb-eng", name: "England", group: "L", total: 34, supporters: 8, last: "It might be coming home" },
+  { code: "be", flagCode: "be", name: "Belgium", group: "G", total: 31, supporters: 7, last: "Red Devils" },
+  { code: "ca", flagCode: "ca", name: "Canada", group: "B", total: 29, supporters: 8, last: "Toronto is showing up" },
+  { code: "ma", flagCode: "ma", name: "Morocco", group: "C", total: 27, supporters: 7, last: "Atlas Lions energy" },
+  { code: "mx", flagCode: "mx", name: "Mexico", group: "A", total: 25, supporters: 6, last: "Vamos México" },
+  { code: "us", flagCode: "us", name: "United States", group: "D", total: 24, supporters: 6, last: "USA boost" },
+  { code: "de", flagCode: "de", name: "Germany", group: "E", total: 23, supporters: 5, last: "Never count them out" },
+  { code: "nl", flagCode: "nl", name: "Netherlands", group: "F", total: 22, supporters: 5, last: "Orange wave" },
+  { code: "co", flagCode: "co", name: "Colombia", group: "K", total: 21, supporters: 5, last: "Colombia on the board" },
+  { code: "ch", flagCode: "ch", name: "Switzerland", group: "B", total: 20, supporters: 5, last: "Swiss boost" },
+  { code: "hr", flagCode: "hr", name: "Croatia", group: "L", total: 19, supporters: 4, last: "Croatia support" },
+  { code: "uy", flagCode: "uy", name: "Uruguay", group: "H", total: 18, supporters: 4, last: "La Celeste" },
+  { code: "jp", flagCode: "jp", name: "Japan", group: "F", total: 17, supporters: 4, last: "Samurai Blue" },
+  { code: "sn", flagCode: "sn", name: "Senegal", group: "I", total: 16, supporters: 4, last: "Lions of Teranga" },
+  { code: "dz", flagCode: "dz", name: "Algeria", group: "J", total: 15, supporters: 3, last: "Desert Warriors" },
+  { code: "ec", flagCode: "ec", name: "Ecuador", group: "E", total: 14, supporters: 3, last: "La Tri" },
+  { code: "py", flagCode: "py", name: "Paraguay", group: "D", total: 13, supporters: 3, last: "Paraguay boost" },
+  { code: "au", flagCode: "au", name: "Australia", group: "D", total: 12, supporters: 3, last: "Socceroos" },
+  { code: "se", flagCode: "se", name: "Sweden", group: "F", total: 12, supporters: 3, last: "Sweden support" },
+  { code: "no", flagCode: "no", name: "Norway", group: "I", total: 11, supporters: 3, last: "Norway boost" },
+  { code: "at", flagCode: "at", name: "Austria", group: "J", total: 11, supporters: 2, last: "Austria boost" },
+  { code: "tr", flagCode: "tr", name: "Turkey", group: "D", total: 10, supporters: 2, last: "Türkiye support" },
+  { code: "ci", flagCode: "ci", name: "Ivory Coast", group: "E", total: 10, supporters: 2, last: "Les Éléphants" },
+  { code: "za", flagCode: "za", name: "South Africa", group: "A", total: 9, supporters: 2, last: "Bafana Bafana" },
+  { code: "kr", flagCode: "kr", name: "South Korea", group: "A", total: 9, supporters: 2, last: "Red Devils" },
+  { code: "cz", flagCode: "cz", name: "Czechia", group: "A", total: 8, supporters: 2, last: "Czechia boost" },
+  { code: "ba", flagCode: "ba", name: "Bosnia and Herzegovina", group: "B", total: 8, supporters: 2, last: "Bosnia boost" },
+  { code: "qa", flagCode: "qa", name: "Qatar", group: "B", total: 7, supporters: 2, last: "Qatar support" },
+  { code: "ht", flagCode: "ht", name: "Haiti", group: "C", total: 7, supporters: 1, last: "Haiti boost" },
+  { code: "gb-sct", flagCode: "gb-sct", name: "Scotland", group: "C", total: 7, supporters: 1, last: "Scotland support" },
+  { code: "cw", flagCode: "cw", name: "Curacao", group: "E", total: 6, supporters: 1, last: "Curacao boost" },
+  { code: "tn", flagCode: "tn", name: "Tunisia", group: "F", total: 6, supporters: 1, last: "Tunisia support" },
+  { code: "eg", flagCode: "eg", name: "Egypt", group: "G", total: 6, supporters: 1, last: "Pharaohs" },
+  { code: "ir", flagCode: "ir", name: "Iran", group: "G", total: 5, supporters: 1, last: "Iran boost" },
+  { code: "nz", flagCode: "nz", name: "New Zealand", group: "G", total: 5, supporters: 1, last: "All Whites" },
+  { code: "cv", flagCode: "cv", name: "Cape Verde", group: "H", total: 5, supporters: 1, last: "Cape Verde boost" },
+  { code: "sa", flagCode: "sa", name: "Saudi Arabia", group: "H", total: 5, supporters: 1, last: "Saudi support" },
+  { code: "iq", flagCode: "iq", name: "Iraq", group: "I", total: 4, supporters: 1, last: "Iraq boost" },
+  { code: "jo", flagCode: "jo", name: "Jordan", group: "J", total: 4, supporters: 1, last: "Jordan support" },
+  { code: "cd", flagCode: "cd", name: "DR Congo", group: "K", total: 4, supporters: 1, last: "Leopards" },
+  { code: "uz", flagCode: "uz", name: "Uzbekistan", group: "K", total: 4, supporters: 1, last: "Uzbekistan boost" },
+  { code: "gh", flagCode: "gh", name: "Ghana", group: "L", total: 4, supporters: 1, last: "Black Stars" },
+  { code: "pa", flagCode: "pa", name: "Panama", group: "L", total: 4, supporters: 1, last: "Panama support" }
 ];
 
-const storageKey = "worldFlagBattleTeamsV5";
+const storageKey = "worldFlagBattleTeamsV6WorldCupOnly";
 let teams = loadTeams();
 let activeTeamCode = null;
 let selectedAmount = 5;
@@ -43,7 +73,7 @@ function cloneTeams(value) {
 function loadTeams() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
-    return Array.isArray(saved) && saved.length ? saved : cloneTeams(defaultTeams);
+    return Array.isArray(saved) && saved.length === defaultTeams.length ? saved : cloneTeams(defaultTeams);
   } catch (error) {
     return cloneTeams(defaultTeams);
   }
@@ -62,7 +92,7 @@ function money(amount) {
 }
 
 function getSortedTeams() {
-  return cloneTeams(teams).sort((a, b) => b.total - a.total);
+  return cloneTeams(teams).sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
 }
 
 function getFlagUrl(team) {
@@ -74,30 +104,41 @@ function getSize(team, index) {
   const max = Math.max(sorted[0]?.total || 1, 1);
   const ratio = Math.sqrt(team.total / max);
 
-  if (index === 0) return 30;
-  if (index <= 6) return Math.max(15, 20 * ratio);
-  return Math.max(9, 15 * ratio);
+  if (index === 0) return 28;
+  if (index <= 8) return Math.max(13, 18 * ratio);
+  if (index <= 22) return Math.max(9.5, 13 * ratio);
+  return Math.max(6.8, 9.5 * ratio);
 }
 
 function getRingPosition(index, total) {
   if (index === 0) return { x: 50, y: 52, ring: 0 };
 
-  const ringOneCount = Math.min(6, total - 1);
-  const ringTwoCount = Math.max(total - 1 - ringOneCount, 1);
-  const isInner = index <= ringOneCount;
-  const ringIndex = isInner ? index - 1 : index - 1 - ringOneCount;
-  const ringCount = isInner ? ringOneCount : ringTwoCount;
+  const rings = [
+    { count: 8, radiusX: 25, radiusY: 22, offset: -90 },
+    { count: 14, radiusX: 41, radiusY: 35, offset: -78 },
+    { count: Math.max(total - 23, 1), radiusX: 50, radiusY: 45, offset: -84 }
+  ];
 
-  const radiusX = isInner ? 25 : 42;
-  const radiusY = isInner ? 23 : 36;
-  const offset = isInner ? -90 : -72;
-  const angle = offset + (360 / ringCount) * ringIndex;
+  let remainingIndex = index - 1;
+  let ringNumber = 1;
+  let ring = rings[0];
+
+  for (let i = 0; i < rings.length; i += 1) {
+    if (remainingIndex < rings[i].count) {
+      ringNumber = i + 1;
+      ring = rings[i];
+      break;
+    }
+    remainingIndex -= rings[i].count;
+  }
+
+  const angle = ring.offset + (360 / ring.count) * remainingIndex;
   const radians = angle * Math.PI / 180;
 
   return {
-    x: 50 + Math.cos(radians) * radiusX,
-    y: 52 + Math.sin(radians) * radiusY,
-    ring: isInner ? 1 : 2
+    x: 50 + Math.cos(radians) * ring.radiusX,
+    y: 52 + Math.sin(radians) * ring.radiusY,
+    ring: ringNumber
   };
 }
 
@@ -106,6 +147,7 @@ function renderBoard() {
   board.innerHTML = `
     <div class="ring-guide ring-one" aria-hidden="true"></div>
     <div class="ring-guide ring-two" aria-hidden="true"></div>
+    <div class="ring-guide ring-three" aria-hidden="true"></div>
     ${sorted.map((team, index) => renderTile(team, index, sorted.length)).join("")}
   `;
 }
@@ -124,7 +166,7 @@ function renderTile(team, index, total) {
       <div class="flag-overlay">
         <div>
           <h2 class="flag-name">${team.name}</h2>
-          <p class="flag-score">${money(team.total)} • ${team.supporters} fan${team.supporters === 1 ? "" : "s"}</p>
+          <p class="flag-score">Group ${team.group} • ${money(team.total)}</p>
         </div>
         <button class="boost-button" data-boost="${team.code}" type="button">Boost</button>
       </div>
@@ -137,7 +179,7 @@ function renderStats() {
   const leader = sorted[0];
   const totalBoosts = teams.reduce((sum, team) => sum + team.total, 0);
   document.querySelector("#leader-label").textContent = `Center leader: ${leader.name}`;
-  document.querySelector("#total-label").textContent = `Total boosts: ${money(totalBoosts)}`;
+  document.querySelector("#total-label").textContent = `${teams.length} World Cup teams • ${money(totalBoosts)} boosted`;
 }
 
 function renderLeaderboard() {
@@ -146,7 +188,7 @@ function renderLeaderboard() {
       <span class="leader-rank">${index + 1}</span>
       <div class="leader-country">
         <strong><img src="${getFlagUrl(team)}" alt="" loading="lazy" /> ${team.name}</strong>
-        <span>${money(team.total)} • latest: ${escapeHtml(team.last)}</span>
+        <span>Group ${team.group} • ${money(team.total)} • latest: ${escapeHtml(team.last)}</span>
       </div>
       <strong>${index === 0 ? "Center" : `Ring ${getRingPosition(index, teams.length).ring}`}</strong>
     </li>
