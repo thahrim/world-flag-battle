@@ -265,9 +265,10 @@ button { cursor: pointer; }
   top: 22px;
   left: 22px;
   width: min(430px, calc(100% - 44px));
-  padding: 1rem;
+  padding: 0.85rem;
   border-radius: 24px;
-  background: var(--panel);
+  background: rgba(3, 7, 18, 0.34);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
 }
 
 .eyebrow {
@@ -281,10 +282,10 @@ button { cursor: pointer; }
 
 h1, h2, p { margin-top: 0; }
 h1 {
-  margin-bottom: 0.35rem;
-  font-size: clamp(1.9rem, 5vw, 3.4rem);
-  line-height: 0.9;
-  letter-spacing: -0.08em;
+  margin-bottom: 0.28rem;
+  font-size: clamp(1.65rem, 4.2vw, 2.7rem);
+  line-height: 0.92;
+  letter-spacing: -0.075em;
 }
 
 h2 {
@@ -494,14 +495,36 @@ h2 {
 .payment-note { margin: 0.8rem 0 0; font-size: 0.82rem; }
 
 @media (max-width: 760px) {
-  .flag-board { min-height: 1120px; height: 1120px; }
+  body { overflow-x: hidden; }
+  .flag-board { min-height: 100svh; height: 100svh; }
   .ring-guide { top: 58%; }
-  .ring-one { width: 56vw; height: 340px; }
-  .ring-two { width: 72vw; height: 620px; }
-  .ring-three { width: 80vw; height: 820px; }
-  .flag-node { min-width: 58px; min-height: 42px; }
-  .flag-node.ring-3 { min-width: 48px; min-height: 36px; }
-  .flag-node.is-leader { min-width: 210px; min-height: 210px; --size: 52vw !important; }
+  .ring-one { width: 58vw; height: 28svh; }
+  .ring-two { width: 78vw; height: 50svh; }
+  .ring-three { width: 92vw; height: 70svh; }
+  .flag-node {
+    min-width: 44px;
+    min-height: 32px;
+    border-radius: 12px;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.32);
+  }
+  .flag-node.ring-3 { min-width: 34px; min-height: 26px; }
+  .flag-node.is-leader {
+    min-width: 150px;
+    min-height: 150px;
+    --size: clamp(150px, 42vw, 190px) !important;
+    border-radius: 30px;
+    box-shadow:
+      0 0 0 8px rgba(250, 204, 21, 0.05),
+      0 22px 72px rgba(250, 204, 21, 0.2),
+      0 20px 58px rgba(0, 0, 0, 0.5);
+  }
+  .flag-node.is-leader::after {
+    top: 10px;
+    right: 10px;
+    width: 38px;
+    height: 38px;
+    font-size: 0.86rem;
+  }
   .flag-node:hover,
   .flag-node:focus-within,
   .flag-node.is-open {
@@ -513,8 +536,29 @@ h2 {
   .flag-node {
     cursor: pointer;
   }
-  .top-panel { top: 12px; left: 12px; width: calc(100% - 24px); }
-  .leaderboard-toggle { top: auto; right: 12px; bottom: 12px; }
+  .flag-overlay { padding: 0.45rem; gap: 0.35rem; }
+  .flag-name { font-size: clamp(0.58rem, 2.5vw, 0.9rem); letter-spacing: -0.055em; }
+  .flag-node.is-leader .flag-name { font-size: clamp(1.25rem, 7vw, 2.05rem); }
+  .flag-score { font-size: 0.58rem; }
+  .flag-node:not(.is-leader) .flag-score { display: none; }
+  .top-panel {
+    top: max(8px, env(safe-area-inset-top));
+    left: 50%;
+    width: min(92vw, 360px);
+    transform: translateX(-50%);
+    padding: 0.55rem 0.65rem;
+    border-radius: 18px;
+    background: rgba(3, 7, 18, 0.16);
+    border-color: rgba(255, 255, 255, 0.09);
+    box-shadow: none;
+    backdrop-filter: blur(10px);
+  }
+  .top-panel .eyebrow { display: none; }
+  .top-panel h1 { font-size: clamp(1.18rem, 7vw, 1.75rem); margin-bottom: 0.12rem; }
+  .subtitle { font-size: 0.76rem; line-height: 1.25; }
+  .score-strip { margin-top: 0.45rem; gap: 0.32rem; }
+  .score-strip span { min-height: 26px; padding: 0 0.55rem; font-size: 0.66rem; background: rgba(255,255,255,0.07); }
+  .leaderboard-toggle { top: auto; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); min-height: 42px; font-size: 0.86rem; }
   .leaderboard-panel { top: auto; right: 12px; bottom: 72px; max-height: 66vh; }
   .legal-note { display: none; }
   .amount-grid { grid-template-columns: repeat(2, 1fr); }
