@@ -19,7 +19,7 @@ const defaultTeams = [
   { code: "eg", name: "Egypt", total: 3, supporters: 1, last: "Pharaohs" }
 ];
 
-const storageKey = "worldFlagBattleTeamsV3";
+const storageKey = "worldFlagBattleTeamsV4";
 let teams = loadTeams();
 let activeTeamCode = null;
 let selectedAmount = 5;
@@ -65,27 +65,68 @@ function getFlagUrl(team) {
   return `https://flagcdn.com/${team.code}.svg`;
 }
 
-function getBasis(team) {
-  const total = teams.reduce((sum, item) => sum + item.total, 0) || 1;
-  const share = team.total / total;
-  return Math.max(8, Math.min(30, share * 100 * 2.15));
+function getSize(team, index) {
+  const sorted = getSortedTeams();
+  const max = Math.max(sorted[0]?.total || 1, 1);
+  const ratio = Math.sqrt(team.total / max);
+  const base = index === 0 ? 33 : 8 + ratio * 14;
+  return Math.max(index === 0 ? 29 : 9, Math.min(index === 0 ? 36 : 22, base));
+}
+
+function getRingPosition(index, total) {
+  if (index === 0) {
+    return { x: 50, y: 50, ring: 0 };
+  }
+
+  const ringOneCount = Math.min(6, total - 1);
+  const ringTwoCount = Math.min(10, Math.max(total - 1 - ringOneCount, 0));
+  const innerStart = 1;
+  const outerStart = 1 + ringOneCount;
+
+  let ring = 1;
+  let ringIndex = index - innerStart;
+  let ringCount = ringOneCount;
+  let radiusX = 27;
+  let radiusY = 26;
+  let angleOffset = -90;
+
+  if (index >= outerStart) {
+    ring = 2;
+    ringIndex = index - outerStart;
+    ringCount = ringTwoCount || 1;
+    radiusX = 43;
+    radiusY = 40;
+    angleOffset = -78;
+  }
+
+  const angle = angleOffset + (360 / ringCount) * ringIndex;
+  const radians = angle * Math.PI / 180;
+  const wobble = ring === 1 ? 2.5 : 3.5;
+
+  return {
+    x: 50 + Math.cos(radians) * radiusX + Math.sin(radians * 2) * wobble,
+    y: 50 + Math.sin(radians) * radiusY + Math.cos(radians * 1.5) * wobble,
+    ring
+  };
 }
 
 function renderBoard() {
   const sorted = getSortedTeams();
-  const leader = sorted[0];
-  const others = sorted.slice(1);
 
   board.innerHTML = `
-    ${others.map(team => renderTile(team, false)).join("")}
-    ${renderTile(leader, true)}
+    <div class="ring-guide ring-one" aria-hidden="true"></div>
+    <div class="ring-guide ring-two" aria-hidden="true"></div>
+    ${sorted.map((team, index) => renderTile(team, index, sorted.length)).join("")}
   `;
 }
 
-function renderTile(team, isLeader) {
-  const basis = getBasis(team).toFixed(2);
+function renderTile(team, index, total) {
+  const position = getRingPosition(index, total);
+  const size = getSize(team, index).toFixed(2);
+  const isLeader = index === 0;
+
   return `
-    <article class="flag-tile ${isLeader ? "is-leader" : ""}" style="--basis: ${basis}%" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
+    <article class="flag-node ${isLeader ? "is-leader" : ""} ring-${position.ring}" style="--x: ${position.x}%; --y: ${position.y}%; --size: ${size}vmin" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
       <div class="flag-visual" aria-hidden="true">
         <img src="${getFlagUrl(team)}" alt="" loading="lazy" />
       </div>
@@ -104,7 +145,7 @@ function renderStats() {
   const sorted = getSortedTeams();
   const leader = sorted[0];
   const totalBoosts = teams.reduce((sum, team) => sum + team.total, 0);
-  document.querySelector("#leader-label").textContent = `Leader: ${leader.name}`;
+  document.querySelector("#leader-label").textContent = `Center leader: ${leader.name}`;
   document.querySelector("#total-label").textContent = `Total boosts: ${money(totalBoosts)}`;
 }
 
@@ -116,7 +157,7 @@ function renderLeaderboard() {
         <strong><img src="${getFlagUrl(team)}" alt="" loading="lazy" /> ${team.name}</strong>
         <span>${money(team.total)} • latest: ${escapeHtml(team.last)}</span>
       </div>
-      <strong>${getBasis(team).toFixed(1)}%</strong>
+      <strong>${index === 0 ? "Center" : `Ring ${getRingPosition(index, teams.length).ring}`}</strong>
     </li>
   `).join("");
 }
@@ -176,10 +217,10 @@ board.addEventListener("click", event => {
 });
 
 board.addEventListener("touchstart", event => {
-  const tile = event.target.closest(".flag-tile");
-  if (!tile) return;
-  document.querySelectorAll(".flag-tile.is-open").forEach(item => item.classList.remove("is-open"));
-  tile.classList.add("is-open");
+  const node = event.target.closest(".flag-node");
+  if (!node) return;
+  document.querySelectorAll(".flag-node.is-open").forEach(item => item.classList.remove("is-open"));
+  node.classList.add("is-open");
 }, { passive: true });
 
 amountGrid.addEventListener("click", event => {
