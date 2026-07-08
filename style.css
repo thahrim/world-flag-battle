@@ -495,12 +495,26 @@ h2 {
 
 @media (max-width: 760px) {
   .flag-board { min-height: 1120px; height: 1120px; }
-  .ring-one { width: 86vw; height: 380px; }
-  .ring-two { width: 118vw; height: 680px; }
-  .ring-three { width: 142vw; height: 980px; }
-  .flag-node { min-width: 62px; min-height: 46px; }
-  .flag-node.ring-3 { min-width: 52px; min-height: 38px; }
+  .ring-guide { top: 58%; }
+  .ring-one { width: 56vw; height: 340px; }
+  .ring-two { width: 72vw; height: 620px; }
+  .ring-three { width: 80vw; height: 820px; }
+  .flag-node { min-width: 58px; min-height: 42px; }
+  .flag-node.ring-3 { min-width: 48px; min-height: 36px; }
   .flag-node.is-leader { min-width: 210px; min-height: 210px; --size: 52vw !important; }
+  .flag-node:hover,
+  .flag-node:focus-within,
+  .flag-node.is-open {
+    transform: translate(-50%, -50%) scale(1.03);
+  }
+  .boost-button {
+    min-height: 32px;
+    padding: 0 0.65rem;
+    font-size: 0.78rem;
+    opacity: 0.94;
+    transform: none;
+  }
+  .flag-node.is-leader .boost-button { min-height: 46px; }
   .top-panel { top: 12px; left: 12px; width: calc(100% - 24px); }
   .leaderboard-toggle { top: auto; right: 12px; bottom: 12px; }
   .leaderboard-panel { top: auto; right: 12px; bottom: 72px; max-height: 66vh; }
