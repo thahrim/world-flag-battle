@@ -110,10 +110,21 @@ function getSize(team, index) {
   return Math.max(6.8, 9.5 * ratio);
 }
 
-function getRingPosition(index, total) {
-  if (index === 0) return { x: 50, y: 52, ring: 0 };
+function isCompactBoard() {
+  return window.matchMedia("(max-width: 760px)").matches;
+}
 
-  const rings = [
+function getRingPosition(index, total) {
+  const compact = isCompactBoard();
+  const centerY = compact ? 58 : 52;
+
+  if (index === 0) return { x: 50, y: centerY, ring: 0 };
+
+  const rings = compact ? [
+    { count: 8, radiusX: 28, radiusY: 17, offset: -90 },
+    { count: 14, radiusX: 36, radiusY: 28, offset: -78 },
+    { count: Math.max(total - 23, 1), radiusX: 40, radiusY: 37, offset: -84 }
+  ] : [
     { count: 8, radiusX: 25, radiusY: 22, offset: -90 },
     { count: 14, radiusX: 41, radiusY: 35, offset: -78 },
     { count: Math.max(total - 23, 1), radiusX: 50, radiusY: 45, offset: -84 }
@@ -279,6 +290,10 @@ closeLeaderboard.addEventListener("click", () => {
 document.querySelector("#reset-demo").addEventListener("click", () => {
   localStorage.removeItem(storageKey);
   teams = cloneTeams(defaultTeams);
+  render();
+});
+
+window.addEventListener("resize", () => {
   render();
 });
 
