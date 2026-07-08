@@ -3,132 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="World Flag Battle is a playful fan wall where every boost makes your country flag bigger on the board." />
-  <title>World Flag Battle | Boost Your Country</title>
+  <meta name="description" content="World Flag Battle is a playful fan wall where every boost makes your country flag take up more space on the board." />
+  <title>World Flag Battle | Make Your Flag Bigger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav-shell" aria-label="Main navigation">
-      <a class="brand" href="#top" aria-label="World Flag Battle home">
-        <span class="brand-mark">🏆</span>
-        <span>World Flag Battle</span>
-      </a>
-      <div class="nav-links">
-        <a href="#battle">Battle</a>
-        <a href="#leaderboard">Leaderboard</a>
-        <a href="#how-it-works">How it works</a>
-      </div>
-    </nav>
-  </header>
+  <main class="app-shell">
+    <section class="flag-board" id="flag-board" aria-label="World Flag Battle board"></section>
 
-  <main id="top">
-    <section class="hero section-shell">
-      <div class="hero-copy">
-        <p class="eyebrow">Unofficial fan competition</p>
-        <h1>Boost your country. Make your flag take over the board.</h1>
-        <p class="hero-text">
-          Pick a team, send a small boost, and watch their flag grow. The biggest flag wins bragging rights on the fan wall.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#battle">Start boosting</a>
-          <a class="button button-secondary" href="#leaderboard">See leaders</a>
+    <aside class="top-panel" aria-label="Site information">
+      <div>
+        <p class="eyebrow">Unofficial fan battle</p>
+        <h1>World Flag Battle</h1>
+        <p class="subtitle">Boost a country. Its flag grows and takes up more space.</p>
+      </div>
+      <div class="score-strip">
+        <span id="leader-label">Leader: Portugal</span>
+        <span id="total-label">Total boosts: $0</span>
+      </div>
+    </aside>
+
+    <button class="leaderboard-toggle" id="leaderboard-toggle" type="button" aria-expanded="false" aria-controls="leaderboard-panel">
+      🏆 Leaderboard
+    </button>
+
+    <aside class="leaderboard-panel" id="leaderboard-panel" aria-label="Leaderboard">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Top flags</p>
+          <h2>Leaderboard</h2>
         </div>
-        <p class="disclaimer">
-          Fan-made concept. Not affiliated with FIFA, the World Cup, or any national football association.
-        </p>
+        <button id="close-leaderboard" type="button" aria-label="Close leaderboard">×</button>
       </div>
-
-      <aside class="hero-card" aria-label="Current battle summary">
-        <div class="trophy-row">
-          <span>🔥</span>
-          <div>
-            <strong id="top-team-name">Loading leader...</strong>
-            <small>Current top country</small>
-          </div>
-        </div>
-        <div class="flag-preview" id="hero-flag">🇵🇹</div>
-        <div class="progress-wrap">
-          <div class="progress-label">
-            <span>Total fan boosts</span>
-            <strong id="total-boosts">$0</strong>
-          </div>
-          <div class="progress-bar" aria-hidden="true"><span id="total-progress"></span></div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="section-shell stats-grid" aria-label="Site stats">
-      <article>
-        <strong id="countries-count">12</strong>
-        <span>Countries</span>
-      </article>
-      <article>
-        <strong id="supporters-count">0</strong>
-        <span>Supporters</span>
-      </article>
-      <article>
-        <strong id="biggest-boost">$0</strong>
-        <span>Largest team total</span>
-      </article>
-    </section>
-
-    <section id="battle" class="section-shell battle-section">
-      <div class="section-heading">
-        <p class="eyebrow">The battle board</p>
-        <h2>Every boost makes the flag bigger.</h2>
-        <p>Choose a country below. This MVP uses demo/local totals, so you can test the feel before connecting Stripe or PayPal.</p>
-      </div>
-
-      <div class="filter-card">
-        <label for="country-search">Find your team</label>
-        <input id="country-search" type="search" placeholder="Search country, e.g. Portugal, Canada, Brazil..." autocomplete="off" />
-      </div>
-
-      <div class="flags-grid" id="flags-grid" aria-live="polite"></div>
-    </section>
-
-    <section id="leaderboard" class="section-shell leaderboard-layout">
-      <div class="section-heading compact">
-        <p class="eyebrow">Leaderboard</p>
-        <h2>Who is winning?</h2>
-        <p>The leaderboard updates instantly on this test page.</p>
-      </div>
-
-      <div class="leaderboard-card">
-        <ol id="leaderboard-list"></ol>
-      </div>
-    </section>
-
-    <section id="how-it-works" class="section-shell how-grid">
-      <article>
-        <span>1</span>
-        <h3>Pick a country</h3>
-        <p>Fans choose the team they want to push up the board.</p>
-      </article>
-      <article>
-        <span>2</span>
-        <h3>Send a boost</h3>
-        <p>Start with $1, $5, $10, or a custom amount. Later, this button can connect to Stripe or PayPal.</p>
-      </article>
-      <article>
-        <span>3</span>
-        <h3>Flag gets bigger</h3>
-        <p>The more support a country gets, the more visual space their flag earns.</p>
-      </article>
-    </section>
+      <ol id="leaderboard-list"></ol>
+      <button class="ghost-button" id="reset-demo" type="button">Reset demo</button>
+    </aside>
   </main>
 
   <dialog class="boost-modal" id="boost-modal" aria-labelledby="modal-title">
     <form method="dialog" class="modal-card">
       <button class="modal-close" value="cancel" aria-label="Close boost form">×</button>
       <div class="modal-flag" id="modal-flag">🇨🇦</div>
-      <p class="eyebrow">Boost this country</p>
+      <p class="eyebrow">Boost this flag</p>
       <h2 id="modal-title">Canada</h2>
-      <p class="modal-copy">Pick a test boost amount. This will update the page locally so you can test the idea before taking real payments.</p>
+      <p class="modal-copy">Choose a test amount. In the real version, this button would take the fan to Stripe, PayPal, or another checkout page.</p>
 
       <div class="amount-grid" id="amount-grid" aria-label="Boost amount options">
         <button type="button" data-amount="1">$1</button>
@@ -137,19 +58,16 @@
         <button type="button" data-amount="25">$25</button>
       </div>
 
-      <label class="field-label" for="supporter-name">Supporter name/message optional</label>
-      <input id="supporter-name" type="text" maxlength="40" placeholder="RimZ says Portugal all the way" />
+      <label class="field-label" for="supporter-name">Supporter message optional</label>
+      <input id="supporter-name" type="text" maxlength="42" placeholder="RimZ says Portugal all the way" />
 
-      <button class="button button-primary full-width" id="confirm-boost" type="button">Add test boost</button>
-      <p class="payment-note">Payment placeholder: replace this with Stripe Checkout, PayPal, or a Cloudflare Worker endpoint.</p>
+      <button class="primary-button full-width" id="confirm-boost" type="button">Add test boost</button>
+      <p class="payment-note">Demo mode: totals are saved only in this browser using localStorage.</p>
     </form>
   </dialog>
 
-  <footer class="site-footer">
-    <div class="section-shell footer-inner">
-      <p>© <span id="year"></span> World Flag Battle. Fan-made entertainment page.</p>
-      <button id="reset-demo" type="button">Reset demo totals</button>
-    </div>
+  <footer class="legal-note">
+    Fan-made concept. Not affiliated with FIFA, the World Cup, or any national football association.
   </footer>
 
   <script src="script.js"></script>
