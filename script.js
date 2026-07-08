@@ -1,31 +1,39 @@
 const defaultTeams = [
   { code: "pt", name: "Portugal", flag: "🇵🇹", total: 48, supporters: 13, last: "RimZ says Ronaldo forever" },
-  { code: "ca", name: "Canada", flag: "🇨🇦", total: 27, supporters: 8, last: "Toronto is showing up" },
   { code: "br", name: "Brazil", flag: "🇧🇷", total: 42, supporters: 11, last: "Joga bonito" },
   { code: "ar", name: "Argentina", flag: "🇦🇷", total: 39, supporters: 9, last: "Vamos!" },
   { code: "fr", name: "France", flag: "🇫🇷", total: 31, supporters: 7, last: "Allez les Bleus" },
+  { code: "ca", name: "Canada", flag: "🇨🇦", total: 27, supporters: 8, last: "Toronto is showing up" },
   { code: "bd", name: "Bangladesh", flag: "🇧🇩", total: 22, supporters: 6, last: "Bangladesh on the board" },
   { code: "ma", name: "Morocco", flag: "🇲🇦", total: 18, supporters: 4, last: "Atlas Lions energy" },
   { code: "jp", name: "Japan", flag: "🇯🇵", total: 16, supporters: 4, last: "Samurai Blue" },
   { code: "de", name: "Germany", flag: "🇩🇪", total: 15, supporters: 3, last: "Never count them out" },
   { code: "es", name: "Spain", flag: "🇪🇸", total: 13, supporters: 3, last: "La Roja" },
   { code: "gb-eng", name: "England", flag: "🏴", total: 12, supporters: 3, last: "It might be coming home" },
-  { code: "nl", name: "Netherlands", flag: "🇳🇱", total: 9, supporters: 2, last: "Orange wave" }
+  { code: "nl", name: "Netherlands", flag: "🇳🇱", total: 9, supporters: 2, last: "Orange wave" },
+  { code: "mx", name: "Mexico", flag: "🇲🇽", total: 8, supporters: 2, last: "Vamos México" },
+  { code: "us", name: "United States", flag: "🇺🇸", total: 7, supporters: 2, last: "USA boost" },
+  { code: "it", name: "Italy", flag: "🇮🇹", total: 6, supporters: 1, last: "Azzurri" },
+  { code: "kr", name: "South Korea", flag: "🇰🇷", total: 5, supporters: 1, last: "Red Devils" },
+  { code: "ng", name: "Nigeria", flag: "🇳🇬", total: 4, supporters: 1, last: "Super Eagles" },
+  { code: "eg", name: "Egypt", flag: "🇪🇬", total: 3, supporters: 1, last: "Pharaohs" }
 ];
 
-const storageKey = "worldFlagBattleTeamsV1";
+const storageKey = "worldFlagBattleTeamsV2";
 let teams = loadTeams();
 let activeTeamCode = null;
 let selectedAmount = 5;
 
-const flagsGrid = document.querySelector("#flags-grid");
+const board = document.querySelector("#flag-board");
 const leaderboardList = document.querySelector("#leaderboard-list");
+const leaderboardPanel = document.querySelector("#leaderboard-panel");
+const leaderboardToggle = document.querySelector("#leaderboard-toggle");
+const closeLeaderboard = document.querySelector("#close-leaderboard");
 const modal = document.querySelector("#boost-modal");
 const modalFlag = document.querySelector("#modal-flag");
 const modalTitle = document.querySelector("#modal-title");
 const confirmBoost = document.querySelector("#confirm-boost");
 const supporterName = document.querySelector("#supporter-name");
-const countrySearch = document.querySelector("#country-search");
 const amountGrid = document.querySelector("#amount-grid");
 
 function loadTeams() {
@@ -53,43 +61,36 @@ function getSortedTeams() {
   return [...teams].sort((a, b) => b.total - a.total);
 }
 
-function getFlagSize(team) {
-  const max = Math.max(...teams.map(item => item.total), 1);
-  const ratio = team.total / max;
-  return Math.round(54 + ratio * 72);
+function getBasis(team) {
+  const total = teams.reduce((sum, item) => sum + item.total, 0) || 1;
+  const share = team.total / total;
+  return Math.max(8, Math.min(34, share * 100 * 2.35));
+}
+
+function renderBoard() {
+  board.innerHTML = getSortedTeams().map(team => {
+    const basis = getBasis(team).toFixed(2);
+    return `
+      <article class="flag-tile" style="--basis: ${basis}%" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
+        <div class="flag-visual" aria-hidden="true">${team.flag}</div>
+        <div class="flag-overlay">
+          <div>
+            <h2 class="flag-name">${team.name}</h2>
+            <p class="flag-score">${money(team.total)} • ${team.supporters} fan${team.supporters === 1 ? "" : "s"}</p>
+          </div>
+          <button class="boost-button" data-boost="${team.code}" type="button">Boost ${team.flag}</button>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function renderStats() {
   const sorted = getSortedTeams();
   const leader = sorted[0];
   const totalBoosts = teams.reduce((sum, team) => sum + team.total, 0);
-  const totalSupporters = teams.reduce((sum, team) => sum + team.supporters, 0);
-
-  document.querySelector("#top-team-name").textContent = `${leader.flag} ${leader.name}`;
-  document.querySelector("#hero-flag").textContent = leader.flag;
-  document.querySelector("#total-boosts").textContent = money(totalBoosts);
-  document.querySelector("#total-progress").style.width = `${Math.min(100, 18 + totalBoosts / 4)}%`;
-  document.querySelector("#countries-count").textContent = teams.length;
-  document.querySelector("#supporters-count").textContent = totalSupporters;
-  document.querySelector("#biggest-boost").textContent = money(leader.total);
-  document.querySelector("#year").textContent = new Date().getFullYear();
-}
-
-function renderFlags() {
-  const query = countrySearch.value.trim().toLowerCase();
-  const filteredTeams = getSortedTeams().filter(team => team.name.toLowerCase().includes(query));
-
-  flagsGrid.innerHTML = filteredTeams.map(team => `
-    <article class="flag-card">
-      <div class="flag-emoji" style="font-size: ${getFlagSize(team)}px" aria-hidden="true">${team.flag}</div>
-      <div class="flag-meta">
-        <strong>${team.name}</strong>
-        <span>${money(team.total)} boosted by ${team.supporters} fan${team.supporters === 1 ? "" : "s"}</span>
-        <p class="supporter-line">Latest: ${escapeHtml(team.last)}</p>
-        <button class="button button-secondary" data-boost="${team.code}">Boost ${team.flag}</button>
-      </div>
-    </article>
-  `).join("");
+  document.querySelector("#leader-label").textContent = `Leader: ${leader.flag} ${leader.name}`;
+  document.querySelector("#total-label").textContent = `Total boosts: ${money(totalBoosts)}`;
 }
 
 function renderLeaderboard() {
@@ -98,16 +99,16 @@ function renderLeaderboard() {
       <span class="leader-rank">${index + 1}</span>
       <div class="leader-country">
         <strong>${team.flag} ${team.name}</strong>
-        <span>${team.supporters} supporter${team.supporters === 1 ? "" : "s"}</span>
+        <span>${money(team.total)} • latest: ${escapeHtml(team.last)}</span>
       </div>
-      <strong>${money(team.total)}</strong>
+      <strong>${getBasis(team).toFixed(1)}%</strong>
     </li>
   `).join("");
 }
 
 function render() {
+  renderBoard();
   renderStats();
-  renderFlags();
   renderLeaderboard();
 }
 
@@ -153,11 +154,18 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-flagsGrid.addEventListener("click", event => {
+board.addEventListener("click", event => {
   const button = event.target.closest("[data-boost]");
   if (!button) return;
   openBoostModal(button.dataset.boost);
 });
+
+board.addEventListener("touchstart", event => {
+  const tile = event.target.closest(".flag-tile");
+  if (!tile) return;
+  document.querySelectorAll(".flag-tile.is-open").forEach(item => item.classList.remove("is-open"));
+  tile.classList.add("is-open");
+}, { passive: true });
 
 amountGrid.addEventListener("click", event => {
   const button = event.target.closest("button[data-amount]");
@@ -168,7 +176,16 @@ amountGrid.addEventListener("click", event => {
 });
 
 confirmBoost.addEventListener("click", addBoost);
-countrySearch.addEventListener("input", renderFlags);
+
+leaderboardToggle.addEventListener("click", () => {
+  const isOpen = leaderboardPanel.classList.toggle("is-open");
+  leaderboardToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+closeLeaderboard.addEventListener("click", () => {
+  leaderboardPanel.classList.remove("is-open");
+  leaderboardToggle.setAttribute("aria-expanded", "false");
+});
 
 document.querySelector("#reset-demo").addEventListener("click", () => {
   localStorage.removeItem(storageKey);
