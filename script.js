@@ -1,25 +1,25 @@
 const defaultTeams = [
-  { code: "pt", name: "Portugal", flag: "🇵🇹", total: 48, supporters: 13, last: "RimZ says Ronaldo forever" },
-  { code: "br", name: "Brazil", flag: "🇧🇷", total: 42, supporters: 11, last: "Joga bonito" },
-  { code: "ar", name: "Argentina", flag: "🇦🇷", total: 39, supporters: 9, last: "Vamos!" },
-  { code: "fr", name: "France", flag: "🇫🇷", total: 31, supporters: 7, last: "Allez les Bleus" },
-  { code: "ca", name: "Canada", flag: "🇨🇦", total: 27, supporters: 8, last: "Toronto is showing up" },
-  { code: "bd", name: "Bangladesh", flag: "🇧🇩", total: 22, supporters: 6, last: "Bangladesh on the board" },
-  { code: "ma", name: "Morocco", flag: "🇲🇦", total: 18, supporters: 4, last: "Atlas Lions energy" },
-  { code: "jp", name: "Japan", flag: "🇯🇵", total: 16, supporters: 4, last: "Samurai Blue" },
-  { code: "de", name: "Germany", flag: "🇩🇪", total: 15, supporters: 3, last: "Never count them out" },
-  { code: "es", name: "Spain", flag: "🇪🇸", total: 13, supporters: 3, last: "La Roja" },
-  { code: "gb-eng", name: "England", flag: "🏴", total: 12, supporters: 3, last: "It might be coming home" },
-  { code: "nl", name: "Netherlands", flag: "🇳🇱", total: 9, supporters: 2, last: "Orange wave" },
-  { code: "mx", name: "Mexico", flag: "🇲🇽", total: 8, supporters: 2, last: "Vamos México" },
-  { code: "us", name: "United States", flag: "🇺🇸", total: 7, supporters: 2, last: "USA boost" },
-  { code: "it", name: "Italy", flag: "🇮🇹", total: 6, supporters: 1, last: "Azzurri" },
-  { code: "kr", name: "South Korea", flag: "🇰🇷", total: 5, supporters: 1, last: "Red Devils" },
-  { code: "ng", name: "Nigeria", flag: "🇳🇬", total: 4, supporters: 1, last: "Super Eagles" },
-  { code: "eg", name: "Egypt", flag: "🇪🇬", total: 3, supporters: 1, last: "Pharaohs" }
+  { code: "pt", name: "Portugal", total: 48, supporters: 13, last: "RimZ says Ronaldo forever" },
+  { code: "br", name: "Brazil", total: 42, supporters: 11, last: "Joga bonito" },
+  { code: "ar", name: "Argentina", total: 39, supporters: 9, last: "Vamos!" },
+  { code: "fr", name: "France", total: 31, supporters: 7, last: "Allez les Bleus" },
+  { code: "ca", name: "Canada", total: 27, supporters: 8, last: "Toronto is showing up" },
+  { code: "bd", name: "Bangladesh", total: 22, supporters: 6, last: "Bangladesh on the board" },
+  { code: "ma", name: "Morocco", total: 18, supporters: 4, last: "Atlas Lions energy" },
+  { code: "jp", name: "Japan", total: 16, supporters: 4, last: "Samurai Blue" },
+  { code: "de", name: "Germany", total: 15, supporters: 3, last: "Never count them out" },
+  { code: "es", name: "Spain", total: 13, supporters: 3, last: "La Roja" },
+  { code: "gb-eng", name: "England", total: 12, supporters: 3, last: "It might be coming home" },
+  { code: "nl", name: "Netherlands", total: 9, supporters: 2, last: "Orange wave" },
+  { code: "mx", name: "Mexico", total: 8, supporters: 2, last: "Vamos México" },
+  { code: "us", name: "United States", total: 7, supporters: 2, last: "USA boost" },
+  { code: "it", name: "Italy", total: 6, supporters: 1, last: "Azzurri" },
+  { code: "kr", name: "South Korea", total: 5, supporters: 1, last: "Red Devils" },
+  { code: "ng", name: "Nigeria", total: 4, supporters: 1, last: "Super Eagles" },
+  { code: "eg", name: "Egypt", total: 3, supporters: 1, last: "Pharaohs" }
 ];
 
-const storageKey = "worldFlagBattleTeamsV2";
+const storageKey = "worldFlagBattleTeamsV3";
 let teams = loadTeams();
 let activeTeamCode = null;
 let selectedAmount = 5;
@@ -61,35 +61,50 @@ function getSortedTeams() {
   return [...teams].sort((a, b) => b.total - a.total);
 }
 
+function getFlagUrl(team) {
+  return `https://flagcdn.com/${team.code}.svg`;
+}
+
 function getBasis(team) {
   const total = teams.reduce((sum, item) => sum + item.total, 0) || 1;
   const share = team.total / total;
-  return Math.max(8, Math.min(34, share * 100 * 2.35));
+  return Math.max(8, Math.min(30, share * 100 * 2.15));
 }
 
 function renderBoard() {
-  board.innerHTML = getSortedTeams().map(team => {
-    const basis = getBasis(team).toFixed(2);
-    return `
-      <article class="flag-tile" style="--basis: ${basis}%" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
-        <div class="flag-visual" aria-hidden="true">${team.flag}</div>
-        <div class="flag-overlay">
-          <div>
-            <h2 class="flag-name">${team.name}</h2>
-            <p class="flag-score">${money(team.total)} • ${team.supporters} fan${team.supporters === 1 ? "" : "s"}</p>
-          </div>
-          <button class="boost-button" data-boost="${team.code}" type="button">Boost ${team.flag}</button>
+  const sorted = getSortedTeams();
+  const leader = sorted[0];
+  const others = sorted.slice(1);
+
+  board.innerHTML = `
+    ${others.map(team => renderTile(team, false)).join("")}
+    ${renderTile(leader, true)}
+  `;
+}
+
+function renderTile(team, isLeader) {
+  const basis = getBasis(team).toFixed(2);
+  return `
+    <article class="flag-tile ${isLeader ? "is-leader" : ""}" style="--basis: ${basis}%" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
+      <div class="flag-visual" aria-hidden="true">
+        <img src="${getFlagUrl(team)}" alt="" loading="lazy" />
+      </div>
+      <div class="flag-overlay">
+        <div>
+          <h2 class="flag-name">${team.name}</h2>
+          <p class="flag-score">${money(team.total)} • ${team.supporters} fan${team.supporters === 1 ? "" : "s"}</p>
         </div>
-      </article>
-    `;
-  }).join("");
+        <button class="boost-button" data-boost="${team.code}" type="button">Boost</button>
+      </div>
+    </article>
+  `;
 }
 
 function renderStats() {
   const sorted = getSortedTeams();
   const leader = sorted[0];
   const totalBoosts = teams.reduce((sum, team) => sum + team.total, 0);
-  document.querySelector("#leader-label").textContent = `Leader: ${leader.flag} ${leader.name}`;
+  document.querySelector("#leader-label").textContent = `Leader: ${leader.name}`;
   document.querySelector("#total-label").textContent = `Total boosts: ${money(totalBoosts)}`;
 }
 
@@ -98,7 +113,7 @@ function renderLeaderboard() {
     <li class="leader-row">
       <span class="leader-rank">${index + 1}</span>
       <div class="leader-country">
-        <strong>${team.flag} ${team.name}</strong>
+        <strong><img src="${getFlagUrl(team)}" alt="" loading="lazy" /> ${team.name}</strong>
         <span>${money(team.total)} • latest: ${escapeHtml(team.last)}</span>
       </div>
       <strong>${getBasis(team).toFixed(1)}%</strong>
@@ -119,7 +134,7 @@ function openBoostModal(teamCode) {
   activeTeamCode = teamCode;
   selectedAmount = 5;
   supporterName.value = "";
-  modalFlag.textContent = team.flag;
+  modalFlag.innerHTML = `<img src="${getFlagUrl(team)}" alt="${team.name} flag" />`;
   modalTitle.textContent = team.name;
   amountGrid.querySelectorAll("button").forEach(button => {
     button.classList.toggle("is-selected", Number(button.dataset.amount) === selectedAmount);
