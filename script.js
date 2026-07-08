@@ -148,7 +148,7 @@ function getRingPosition(index, total) {
 
   return {
     x: 50 + Math.cos(radians) * ring.radiusX,
-    y: 52 + Math.sin(radians) * ring.radiusY,
+    y: centerY + Math.sin(radians) * ring.radiusY,
     ring: ringNumber
   };
 }
