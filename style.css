@@ -19,7 +19,7 @@ body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(94, 234, 212, 0.14), transparent 32rem),
+    radial-gradient(circle at center, rgba(94, 234, 212, 0.18), transparent 30rem),
     radial-gradient(circle at bottom right, rgba(250, 204, 21, 0.12), transparent 28rem),
     var(--bg);
   overflow-x: hidden;
@@ -35,12 +35,15 @@ button { cursor: pointer; }
 }
 
 .flag-board {
+  position: relative;
   min-height: calc(100vh - 28px);
   display: flex;
   flex-wrap: wrap;
   align-content: stretch;
   align-items: stretch;
+  justify-content: center;
   gap: 10px;
+  padding: 122px 12px 84px;
 }
 
 .flag-tile {
@@ -48,14 +51,32 @@ button { cursor: pointer; }
   position: relative;
   isolation: isolate;
   flex: 1 1 var(--basis);
-  min-width: clamp(112px, var(--basis), 360px);
-  min-height: clamp(120px, calc(var(--basis) * 1.35), 440px);
+  min-width: clamp(112px, var(--basis), 330px);
+  min-height: clamp(120px, calc(var(--basis) * 1.35), 360px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: clamp(18px, 2.3vw, 34px);
   overflow: hidden;
   background: rgba(255, 255, 255, 0.05);
   box-shadow: 0 16px 50px rgba(0, 0, 0, 0.22);
   transform: translateZ(0);
+}
+
+.flag-tile.is-leader {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(42vw, 540px);
+  height: min(42vw, 540px);
+  min-width: 280px;
+  min-height: 280px;
+  transform: translate(-50%, -50%);
+  z-index: 12;
+  border-width: 2px;
+  border-color: rgba(250, 204, 21, 0.72);
+  box-shadow:
+    0 0 0 10px rgba(250, 204, 21, 0.06),
+    0 34px 120px rgba(250, 204, 21, 0.22),
+    0 28px 90px rgba(0, 0, 0, 0.52);
 }
 
 .flag-tile::before {
@@ -69,11 +90,37 @@ button { cursor: pointer; }
   z-index: 1;
 }
 
+.flag-tile.is-leader::after {
+  content: "#1";
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #271b00;
+  font-weight: 900;
+  box-shadow: 0 14px 34px rgba(250, 204, 21, 0.28);
+}
+
 .flag-tile:hover,
 .flag-tile:focus-within {
   border-color: rgba(94, 234, 212, 0.75);
   box-shadow: 0 22px 80px rgba(94, 234, 212, 0.16), 0 20px 60px rgba(0,0,0,0.36);
-  z-index: 4;
+  z-index: 16;
+}
+
+.flag-tile.is-leader:hover,
+.flag-tile.is-leader:focus-within {
+  border-color: rgba(250, 204, 21, 0.95);
+  box-shadow:
+    0 0 0 10px rgba(250, 204, 21, 0.08),
+    0 38px 130px rgba(250, 204, 21, 0.28),
+    0 28px 90px rgba(0, 0, 0, 0.58);
 }
 
 .flag-visual {
@@ -81,16 +128,31 @@ button { cursor: pointer; }
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: clamp(4.8rem, calc(var(--basis) * 0.9), 18rem);
-  filter: saturate(1.2) drop-shadow(0 28px 48px rgba(0, 0, 0, 0.34));
-  transform: scale(1.18);
+  overflow: hidden;
+}
+
+.flag-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.04);
+  filter: saturate(1.18) contrast(1.03);
   transition: transform 0.28s ease, filter 0.28s ease;
 }
 
-.flag-tile:hover .flag-visual,
-.flag-tile:focus-within .flag-visual {
-  transform: scale(1.28) rotate(-1deg);
-  filter: saturate(1.35) drop-shadow(0 34px 54px rgba(0, 0, 0, 0.42));
+.flag-tile:hover .flag-visual img,
+.flag-tile:focus-within .flag-visual img {
+  transform: scale(1.1);
+  filter: saturate(1.28) contrast(1.08);
+}
+
+.flag-tile.is-leader .flag-visual img {
+  transform: scale(1.02);
+}
+
+.flag-tile.is-leader:hover .flag-visual img,
+.flag-tile.is-leader:focus-within .flag-visual img {
+  transform: scale(1.06);
 }
 
 .flag-overlay {
@@ -102,7 +164,7 @@ button { cursor: pointer; }
   justify-content: flex-end;
   gap: 0.8rem;
   padding: clamp(0.85rem, 2vw, 1.4rem);
-  background: linear-gradient(to top, rgba(3, 7, 18, 0.82), transparent 56%);
+  background: linear-gradient(to top, rgba(3, 7, 18, 0.88), rgba(3, 7, 18, 0.08) 62%);
 }
 
 .flag-name {
@@ -114,11 +176,19 @@ button { cursor: pointer; }
   text-shadow: 0 4px 16px rgba(0,0,0,0.38);
 }
 
+.flag-tile.is-leader .flag-name {
+  font-size: clamp(2rem, 5vw, 4.4rem);
+}
+
 .flag-score {
   margin: 0.2rem 0 0;
-  color: rgba(248, 250, 252, 0.78);
+  color: rgba(248, 250, 252, 0.82);
   font-size: 0.82rem;
   font-weight: 800;
+}
+
+.flag-tile.is-leader .flag-score {
+  font-size: 1rem;
 }
 
 .boost-button {
@@ -134,6 +204,13 @@ button { cursor: pointer; }
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.flag-tile.is-leader .boost-button {
+  min-height: 52px;
+  padding: 0 1.25rem;
+  background: var(--gold);
+  color: #271b00;
 }
 
 .flag-tile:hover .boost-button,
@@ -226,7 +303,7 @@ h2 {
 .leaderboard-panel {
   top: 86px;
   right: 22px;
-  width: min(360px, calc(100% - 44px));
+  width: min(380px, calc(100% - 44px));
   max-height: calc(100vh - 126px);
   overflow: auto;
   padding: 1rem;
@@ -281,7 +358,19 @@ h2 {
 
 .leader-country strong,
 .leader-country span { display: block; }
-.leader-country strong { font-size: 0.95rem; }
+.leader-country strong {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+}
+.leader-country strong img {
+  width: 26px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.22);
+}
 .leader-country span { color: var(--muted); font-size: 0.78rem; font-weight: 700; }
 
 .ghost-button {
@@ -325,7 +414,15 @@ h2 {
 }
 
 .modal-close { position: absolute; top: 1rem; right: 1rem; }
-.modal-flag { font-size: 6rem; line-height: 1; margin-bottom: 1rem; }
+.modal-flag {
+  width: 132px;
+  height: 88px;
+  overflow: hidden;
+  border-radius: 18px;
+  margin-bottom: 1rem;
+  box-shadow: 0 18px 42px rgba(0,0,0,0.28);
+}
+.modal-flag img { width: 100%; height: 100%; object-fit: cover; }
 .modal-copy,
 .payment-note { color: var(--muted); line-height: 1.55; }
 
@@ -370,6 +467,13 @@ h2 {
   .app-shell { padding: 8px; }
   .flag-board { min-height: calc(100vh - 16px); gap: 7px; padding-top: 178px; padding-bottom: 72px; }
   .flag-tile { min-width: clamp(92px, var(--basis), 240px); min-height: clamp(104px, calc(var(--basis) * 1.35), 280px); }
+  .flag-tile.is-leader {
+    width: min(72vw, 340px);
+    height: min(72vw, 340px);
+    min-width: 220px;
+    min-height: 220px;
+    top: 56%;
+  }
   .top-panel { top: 12px; left: 12px; width: calc(100% - 24px); }
   .leaderboard-toggle { top: auto; right: 12px; bottom: 12px; }
   .leaderboard-panel { top: auto; right: 12px; bottom: 72px; max-height: 66vh; }
