@@ -169,7 +169,7 @@ function renderTile(team, index, total) {
   const isLeader = index === 0;
 
   return `
-    <article class="flag-node ${isLeader ? "is-leader" : ""} ring-${position.ring}" style="--x:${position.x}%;--y:${position.y}%;--size:${size}vmin" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
+    <article class="flag-node ${isLeader ? "is-leader" : ""} ring-${position.ring}" data-team="${team.code}" style="--x:${position.x}%;--y:${position.y}%;--size:${size}vmin" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
       <div class="flag-visual" aria-hidden="true">
         <img src="${getFlagUrl(team)}" alt="" loading="lazy" onerror="this.closest('.flag-node').classList.add('flag-failed')" />
         <span>${team.name.slice(0, 2).toUpperCase()}</span>
@@ -256,8 +256,14 @@ function escapeHtml(value) {
 
 board.addEventListener("click", event => {
   const button = event.target.closest("[data-boost]");
-  if (!button) return;
-  openBoostModal(button.dataset.boost);
+  if (button) {
+    openBoostModal(button.dataset.boost);
+    return;
+  }
+
+  const node = event.target.closest(".flag-node[data-team]");
+  if (!node || !isCompactBoard()) return;
+  openBoostModal(node.dataset.team);
 });
 
 board.addEventListener("touchstart", event => {

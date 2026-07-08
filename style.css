@@ -508,13 +508,11 @@ h2 {
     transform: translate(-50%, -50%) scale(1.03);
   }
   .boost-button {
-    min-height: 32px;
-    padding: 0 0.65rem;
-    font-size: 0.78rem;
-    opacity: 0.94;
-    transform: none;
+    display: none;
   }
-  .flag-node.is-leader .boost-button { min-height: 46px; }
+  .flag-node {
+    cursor: pointer;
+  }
   .top-panel { top: 12px; left: 12px; width: calc(100% - 24px); }
   .leaderboard-toggle { top: auto; right: 12px; bottom: 12px; }
   .leaderboard-panel { top: auto; right: 12px; bottom: 72px; max-height: 66vh; }
