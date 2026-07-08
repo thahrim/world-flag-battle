@@ -22,7 +22,7 @@ body {
     radial-gradient(circle at center, rgba(94, 234, 212, 0.18), transparent 30rem),
     radial-gradient(circle at bottom right, rgba(250, 204, 21, 0.12), transparent 28rem),
     var(--bg);
-  overflow: hidden;
+  overflow: auto;
 }
 
 button, input { font: inherit; }
@@ -35,7 +35,8 @@ button { cursor: pointer; }
 
 .flag-board {
   position: relative;
-  width: 100vw;
+  width: 100%;
+  min-height: 100vh;
   height: 100vh;
   overflow: hidden;
   background:
@@ -46,22 +47,15 @@ button { cursor: pointer; }
 .ring-guide {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   transform: translate(-50%, -50%);
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   pointer-events: none;
 }
 
-.ring-one {
-  width: 58vw;
-  height: 54vh;
-}
-
-.ring-two {
-  width: 90vw;
-  height: 82vh;
-}
+.ring-one { width: 58vw; height: 50vh; }
+.ring-two { width: 92vw; height: 78vh; }
 
 .flag-node {
   position: absolute;
@@ -76,7 +70,7 @@ button { cursor: pointer; }
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: clamp(16px, 2.2vmin, 32px);
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(15, 23, 42, 0.88);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
   transition: left 0.38s ease, top 0.38s ease, width 0.38s ease, height 0.38s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -158,6 +152,16 @@ button { cursor: pointer; }
   transition: transform 0.28s ease, filter 0.28s ease;
 }
 
+.flag-visual span {
+  display: none;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 5vmin, 4rem);
+  letter-spacing: -0.08em;
+}
+
+.flag-failed .flag-visual img { display: none; }
+.flag-failed .flag-visual span { display: block; }
+
 .flag-node:hover .flag-visual img,
 .flag-node:focus-within .flag-visual img,
 .flag-node.is-open .flag-visual img {
@@ -179,7 +183,7 @@ button { cursor: pointer; }
 
 .flag-name {
   margin: 0;
-  font-size: clamp(0.82rem, calc(var(--size) * 0.105), 2rem);
+  font-size: clamp(0.82rem, 1.8vmin, 2rem);
   line-height: 0.95;
   letter-spacing: -0.06em;
   font-weight: 900;
@@ -193,7 +197,7 @@ button { cursor: pointer; }
 .flag-score {
   margin: 0.2rem 0 0;
   color: rgba(248, 250, 252, 0.82);
-  font-size: clamp(0.68rem, calc(var(--size) * 0.035), 0.95rem);
+  font-size: clamp(0.68rem, 1.1vmin, 0.95rem);
   font-weight: 800;
 }
 
@@ -470,11 +474,10 @@ h2 {
 .payment-note { margin: 0.8rem 0 0; font-size: 0.82rem; }
 
 @media (max-width: 760px) {
-  body { overflow: auto; }
-  .flag-board { min-height: 980px; height: 980px; }
-  .ring-one { width: 86vw; height: 420px; }
-  .ring-two { width: 118vw; height: 760px; }
-  .flag-node { min-width: 84px; min-height: 62px; }
+  .flag-board { min-height: 920px; height: 920px; }
+  .ring-one { width: 86vw; height: 380px; }
+  .ring-two { width: 116vw; height: 700px; }
+  .flag-node { min-width: 76px; min-height: 56px; }
   .flag-node.is-leader { min-width: 210px; min-height: 210px; --size: 52vw !important; }
   .top-panel { top: 12px; left: 12px; width: calc(100% - 24px); }
   .leaderboard-toggle { top: auto; right: 12px; bottom: 12px; }
