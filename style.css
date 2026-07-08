@@ -22,7 +22,7 @@ body {
     radial-gradient(circle at center, rgba(94, 234, 212, 0.18), transparent 30rem),
     radial-gradient(circle at bottom right, rgba(250, 204, 21, 0.12), transparent 28rem),
     var(--bg);
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 button, input { font: inherit; }
@@ -31,66 +31,81 @@ button { cursor: pointer; }
 .app-shell {
   position: relative;
   min-height: 100vh;
-  padding: 14px;
 }
 
 .flag-board {
   position: relative;
-  min-height: calc(100vh - 28px);
-  display: flex;
-  flex-wrap: wrap;
-  align-content: stretch;
-  align-items: stretch;
-  justify-content: center;
-  gap: 10px;
-  padding: 122px 12px 84px;
-}
-
-.flag-tile {
-  --basis: 10%;
-  position: relative;
-  isolation: isolate;
-  flex: 1 1 var(--basis);
-  min-width: clamp(112px, var(--basis), 330px);
-  min-height: clamp(120px, calc(var(--basis) * 1.35), 360px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: clamp(18px, 2.3vw, 34px);
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.22);
-  transform: translateZ(0);
+  background:
+    radial-gradient(circle at center, rgba(250, 204, 21, 0.12), transparent 18vmin),
+    radial-gradient(circle at center, rgba(94, 234, 212, 0.08), transparent 48vmin);
 }
 
-.flag-tile.is-leader {
-  position: fixed;
+.ring-guide {
+  position: absolute;
   left: 50%;
   top: 50%;
-  width: min(42vw, 540px);
-  height: min(42vw, 540px);
-  min-width: 280px;
-  min-height: 280px;
   transform: translate(-50%, -50%);
-  z-index: 12;
-  border-width: 2px;
-  border-color: rgba(250, 204, 21, 0.72);
-  box-shadow:
-    0 0 0 10px rgba(250, 204, 21, 0.06),
-    0 34px 120px rgba(250, 204, 21, 0.22),
-    0 28px 90px rgba(0, 0, 0, 0.52);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  pointer-events: none;
 }
 
-.flag-tile::before {
+.ring-one {
+  width: 58vw;
+  height: 54vh;
+}
+
+.ring-two {
+  width: 90vw;
+  height: 82vh;
+}
+
+.flag-node {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--size);
+  height: calc(var(--size) * 0.72);
+  min-width: 96px;
+  min-height: 72px;
+  transform: translate(-50%, -50%);
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: clamp(16px, 2.2vmin, 32px);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  transition: left 0.38s ease, top 0.38s ease, width 0.38s ease, height 0.38s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.flag-node.is-leader {
+  height: var(--size);
+  min-width: 270px;
+  min-height: 270px;
+  border-width: 2px;
+  border-color: rgba(250, 204, 21, 0.78);
+  border-radius: clamp(28px, 4vmin, 54px);
+  box-shadow:
+    0 0 0 12px rgba(250, 204, 21, 0.06),
+    0 36px 130px rgba(250, 204, 21, 0.24),
+    0 28px 90px rgba(0, 0, 0, 0.58);
+  z-index: 10;
+}
+
+.flag-node::before {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(to bottom, rgba(3, 7, 18, 0.08), rgba(3, 7, 18, 0.34)),
-    radial-gradient(circle at top, rgba(255,255,255,0.16), transparent 34rem);
-  opacity: 0.85;
   z-index: 1;
+  background:
+    linear-gradient(to bottom, rgba(3, 7, 18, 0.03), rgba(3, 7, 18, 0.45)),
+    radial-gradient(circle at top, rgba(255,255,255,0.16), transparent 22rem);
 }
 
-.flag-tile.is-leader::after {
+.flag-node.is-leader::after {
   content: "#1";
   position: absolute;
   right: 18px;
@@ -107,20 +122,23 @@ button { cursor: pointer; }
   box-shadow: 0 14px 34px rgba(250, 204, 21, 0.28);
 }
 
-.flag-tile:hover,
-.flag-tile:focus-within {
-  border-color: rgba(94, 234, 212, 0.75);
-  box-shadow: 0 22px 80px rgba(94, 234, 212, 0.16), 0 20px 60px rgba(0,0,0,0.36);
-  z-index: 16;
+.flag-node:hover,
+.flag-node:focus-within,
+.flag-node.is-open {
+  z-index: 20;
+  border-color: rgba(94, 234, 212, 0.82);
+  transform: translate(-50%, -50%) scale(1.04);
+  box-shadow: 0 24px 80px rgba(94, 234, 212, 0.18), 0 22px 70px rgba(0,0,0,0.48);
 }
 
-.flag-tile.is-leader:hover,
-.flag-tile.is-leader:focus-within {
+.flag-node.is-leader:hover,
+.flag-node.is-leader:focus-within,
+.flag-node.is-leader.is-open {
   border-color: rgba(250, 204, 21, 0.95);
   box-shadow:
-    0 0 0 10px rgba(250, 204, 21, 0.08),
-    0 38px 130px rgba(250, 204, 21, 0.28),
-    0 28px 90px rgba(0, 0, 0, 0.58);
+    0 0 0 12px rgba(250, 204, 21, 0.08),
+    0 42px 140px rgba(250, 204, 21, 0.3),
+    0 30px 100px rgba(0, 0, 0, 0.64);
 }
 
 .flag-visual {
@@ -140,19 +158,11 @@ button { cursor: pointer; }
   transition: transform 0.28s ease, filter 0.28s ease;
 }
 
-.flag-tile:hover .flag-visual img,
-.flag-tile:focus-within .flag-visual img {
+.flag-node:hover .flag-visual img,
+.flag-node:focus-within .flag-visual img,
+.flag-node.is-open .flag-visual img {
   transform: scale(1.1);
   filter: saturate(1.28) contrast(1.08);
-}
-
-.flag-tile.is-leader .flag-visual img {
-  transform: scale(1.02);
-}
-
-.flag-tile.is-leader:hover .flag-visual img,
-.flag-tile.is-leader:focus-within .flag-visual img {
-  transform: scale(1.06);
 }
 
 .flag-overlay {
@@ -162,41 +172,37 @@ button { cursor: pointer; }
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 0.8rem;
-  padding: clamp(0.85rem, 2vw, 1.4rem);
-  background: linear-gradient(to top, rgba(3, 7, 18, 0.88), rgba(3, 7, 18, 0.08) 62%);
+  gap: 0.65rem;
+  padding: clamp(0.72rem, 1.6vmin, 1.35rem);
+  background: linear-gradient(to top, rgba(3, 7, 18, 0.9), rgba(3, 7, 18, 0.04) 64%);
 }
 
 .flag-name {
   margin: 0;
-  font-size: clamp(1rem, calc(var(--basis) * 0.12), 2.15rem);
+  font-size: clamp(0.82rem, calc(var(--size) * 0.105), 2rem);
   line-height: 0.95;
   letter-spacing: -0.06em;
   font-weight: 900;
   text-shadow: 0 4px 16px rgba(0,0,0,0.38);
 }
 
-.flag-tile.is-leader .flag-name {
-  font-size: clamp(2rem, 5vw, 4.4rem);
+.flag-node.is-leader .flag-name {
+  font-size: clamp(2rem, 5vw, 4.2rem);
 }
 
 .flag-score {
   margin: 0.2rem 0 0;
   color: rgba(248, 250, 252, 0.82);
-  font-size: 0.82rem;
+  font-size: clamp(0.68rem, calc(var(--size) * 0.035), 0.95rem);
   font-weight: 800;
-}
-
-.flag-tile.is-leader .flag-score {
-  font-size: 1rem;
 }
 
 .boost-button {
   align-self: flex-start;
   border: 0;
-  min-height: 44px;
+  min-height: 40px;
   border-radius: 999px;
-  padding: 0 1rem;
+  padding: 0 0.95rem;
   background: var(--accent);
   color: #04211d;
   font-weight: 900;
@@ -206,16 +212,16 @@ button { cursor: pointer; }
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.flag-tile.is-leader .boost-button {
+.flag-node.is-leader .boost-button {
   min-height: 52px;
   padding: 0 1.25rem;
   background: var(--gold);
   color: #271b00;
 }
 
-.flag-tile:hover .boost-button,
-.flag-tile:focus-within .boost-button,
-.flag-tile.is-open .boost-button {
+.flag-node:hover .boost-button,
+.flag-node:focus-within .boost-button,
+.flag-node.is-open .boost-button {
   opacity: 1;
   transform: translateY(0);
 }
@@ -225,7 +231,7 @@ button { cursor: pointer; }
 .leaderboard-panel,
 .legal-note {
   position: fixed;
-  z-index: 20;
+  z-index: 30;
   backdrop-filter: blur(18px);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
@@ -464,16 +470,12 @@ h2 {
 .payment-note { margin: 0.8rem 0 0; font-size: 0.82rem; }
 
 @media (max-width: 760px) {
-  .app-shell { padding: 8px; }
-  .flag-board { min-height: calc(100vh - 16px); gap: 7px; padding-top: 178px; padding-bottom: 72px; }
-  .flag-tile { min-width: clamp(92px, var(--basis), 240px); min-height: clamp(104px, calc(var(--basis) * 1.35), 280px); }
-  .flag-tile.is-leader {
-    width: min(72vw, 340px);
-    height: min(72vw, 340px);
-    min-width: 220px;
-    min-height: 220px;
-    top: 56%;
-  }
+  body { overflow: auto; }
+  .flag-board { min-height: 980px; height: 980px; }
+  .ring-one { width: 86vw; height: 420px; }
+  .ring-two { width: 118vw; height: 760px; }
+  .flag-node { min-width: 84px; min-height: 62px; }
+  .flag-node.is-leader { min-width: 210px; min-height: 210px; --size: 52vw !important; }
   .top-panel { top: 12px; left: 12px; width: calc(100% - 24px); }
   .leaderboard-toggle { top: auto; right: 12px; bottom: 12px; }
   .leaderboard-panel { top: auto; right: 12px; bottom: 72px; max-height: 66vh; }
