@@ -1,15 +1,18 @@
 # World Flag Battle
 
-A static MVP for a playful fan competition site where the whole page is made of country flags. When fans boost a country, that flag grows and takes up more space on the board.
+A static MVP for a playful World Cup fan competition site where every participating country's flag competes for space. When fans boost a country, that flag grows and can move closer to the center.
 
 ## What is included
 
-- Full-screen responsive flag territory board
+- 48-team World Cup country list
+- Radial flag layout with the top boosted flag in the center
+- Larger inner-ring flags for higher-supported countries
+- Smaller outer-ring flags for lower-supported countries
 - Hover/tap overlay with a boost button
 - Boost modal with demo payment amounts
 - Leaderboard drawer
 - Demo/local boost totals using `localStorage`
-- Flag size recalculation based on each country's total support
+- Flag size and position recalculation based on each country's total support
 - Clear unofficial disclaimer
 
 ## How it works right now
