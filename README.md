@@ -1,16 +1,20 @@
 # World Flag Battle
 
-A static MVP for a playful fan competition site where every boost makes a country flag bigger on the board.
+A static MVP for a playful fan competition site where the whole page is made of country flags. When fans boost a country, that flag grows and takes up more space on the board.
 
 ## What is included
 
-- Responsive landing page
-- Country flag grid
-- Leaderboard
-- Boost modal
+- Full-screen responsive flag territory board
+- Hover/tap overlay with a boost button
+- Boost modal with demo payment amounts
+- Leaderboard drawer
 - Demo/local boost totals using `localStorage`
-- Search/filter by country
+- Flag size recalculation based on each country's total support
 - Clear unofficial disclaimer
+
+## How it works right now
+
+This is still a front-end demo. Clicking **Boost** opens a test modal and updates totals in the visitor's browser only.
 
 ## How to test locally
 
@@ -32,6 +36,7 @@ The current boost button is intentionally a mock/demo flow. To accept real payme
 - Stripe Checkout
 - PayPal Checkout
 - Cloudflare Worker endpoint that records payments and updates totals
+- Cloudflare D1 or KV for persistent leaderboard totals
 
 ## Notes
 
