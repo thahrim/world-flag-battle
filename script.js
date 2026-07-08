@@ -1,25 +1,25 @@
 const defaultTeams = [
-  { code: "pt", name: "Portugal", total: 48, supporters: 13, last: "RimZ says Ronaldo forever" },
-  { code: "br", name: "Brazil", total: 42, supporters: 11, last: "Joga bonito" },
-  { code: "ar", name: "Argentina", total: 39, supporters: 9, last: "Vamos!" },
-  { code: "fr", name: "France", total: 31, supporters: 7, last: "Allez les Bleus" },
-  { code: "ca", name: "Canada", total: 27, supporters: 8, last: "Toronto is showing up" },
-  { code: "bd", name: "Bangladesh", total: 22, supporters: 6, last: "Bangladesh on the board" },
-  { code: "ma", name: "Morocco", total: 18, supporters: 4, last: "Atlas Lions energy" },
-  { code: "jp", name: "Japan", total: 16, supporters: 4, last: "Samurai Blue" },
-  { code: "de", name: "Germany", total: 15, supporters: 3, last: "Never count them out" },
-  { code: "es", name: "Spain", total: 13, supporters: 3, last: "La Roja" },
-  { code: "gb-eng", name: "England", total: 12, supporters: 3, last: "It might be coming home" },
-  { code: "nl", name: "Netherlands", total: 9, supporters: 2, last: "Orange wave" },
-  { code: "mx", name: "Mexico", total: 8, supporters: 2, last: "Vamos México" },
-  { code: "us", name: "United States", total: 7, supporters: 2, last: "USA boost" },
-  { code: "it", name: "Italy", total: 6, supporters: 1, last: "Azzurri" },
-  { code: "kr", name: "South Korea", total: 5, supporters: 1, last: "Red Devils" },
-  { code: "ng", name: "Nigeria", total: 4, supporters: 1, last: "Super Eagles" },
-  { code: "eg", name: "Egypt", total: 3, supporters: 1, last: "Pharaohs" }
+  { code: "pt", flagCode: "pt", name: "Portugal", total: 48, supporters: 13, last: "RimZ says Ronaldo forever" },
+  { code: "br", flagCode: "br", name: "Brazil", total: 42, supporters: 11, last: "Joga bonito" },
+  { code: "ar", flagCode: "ar", name: "Argentina", total: 39, supporters: 9, last: "Vamos!" },
+  { code: "fr", flagCode: "fr", name: "France", total: 31, supporters: 7, last: "Allez les Bleus" },
+  { code: "ca", flagCode: "ca", name: "Canada", total: 27, supporters: 8, last: "Toronto is showing up" },
+  { code: "bd", flagCode: "bd", name: "Bangladesh", total: 22, supporters: 6, last: "Bangladesh on the board" },
+  { code: "ma", flagCode: "ma", name: "Morocco", total: 18, supporters: 4, last: "Atlas Lions energy" },
+  { code: "jp", flagCode: "jp", name: "Japan", total: 16, supporters: 4, last: "Samurai Blue" },
+  { code: "de", flagCode: "de", name: "Germany", total: 15, supporters: 3, last: "Never count them out" },
+  { code: "es", flagCode: "es", name: "Spain", total: 13, supporters: 3, last: "La Roja" },
+  { code: "gb", flagCode: "gb", name: "United Kingdom", total: 12, supporters: 3, last: "It might be coming home" },
+  { code: "nl", flagCode: "nl", name: "Netherlands", total: 9, supporters: 2, last: "Orange wave" },
+  { code: "mx", flagCode: "mx", name: "Mexico", total: 8, supporters: 2, last: "Vamos México" },
+  { code: "us", flagCode: "us", name: "United States", total: 7, supporters: 2, last: "USA boost" },
+  { code: "it", flagCode: "it", name: "Italy", total: 6, supporters: 1, last: "Azzurri" },
+  { code: "kr", flagCode: "kr", name: "South Korea", total: 5, supporters: 1, last: "Red Devils" },
+  { code: "ng", flagCode: "ng", name: "Nigeria", total: 4, supporters: 1, last: "Super Eagles" },
+  { code: "eg", flagCode: "eg", name: "Egypt", total: 3, supporters: 1, last: "Pharaohs" }
 ];
 
-const storageKey = "worldFlagBattleTeamsV4";
+const storageKey = "worldFlagBattleTeamsV5";
 let teams = loadTeams();
 let activeTeamCode = null;
 let selectedAmount = 5;
@@ -36,12 +36,16 @@ const confirmBoost = document.querySelector("#confirm-boost");
 const supporterName = document.querySelector("#supporter-name");
 const amountGrid = document.querySelector("#amount-grid");
 
+function cloneTeams(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
 function loadTeams() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
-    return Array.isArray(saved) && saved.length ? saved : structuredClone(defaultTeams);
-  } catch {
-    return structuredClone(defaultTeams);
+    return Array.isArray(saved) && saved.length ? saved : cloneTeams(defaultTeams);
+  } catch (error) {
+    return cloneTeams(defaultTeams);
   }
 }
 
@@ -58,61 +62,47 @@ function money(amount) {
 }
 
 function getSortedTeams() {
-  return [...teams].sort((a, b) => b.total - a.total);
+  return cloneTeams(teams).sort((a, b) => b.total - a.total);
 }
 
 function getFlagUrl(team) {
-  return `https://flagcdn.com/${team.code}.svg`;
+  return `https://flagcdn.com/w320/${team.flagCode || team.code}.png`;
 }
 
 function getSize(team, index) {
   const sorted = getSortedTeams();
   const max = Math.max(sorted[0]?.total || 1, 1);
   const ratio = Math.sqrt(team.total / max);
-  const base = index === 0 ? 33 : 8 + ratio * 14;
-  return Math.max(index === 0 ? 29 : 9, Math.min(index === 0 ? 36 : 22, base));
+
+  if (index === 0) return 30;
+  if (index <= 6) return Math.max(15, 20 * ratio);
+  return Math.max(9, 15 * ratio);
 }
 
 function getRingPosition(index, total) {
-  if (index === 0) {
-    return { x: 50, y: 50, ring: 0 };
-  }
+  if (index === 0) return { x: 50, y: 52, ring: 0 };
 
   const ringOneCount = Math.min(6, total - 1);
-  const ringTwoCount = Math.min(10, Math.max(total - 1 - ringOneCount, 0));
-  const innerStart = 1;
-  const outerStart = 1 + ringOneCount;
+  const ringTwoCount = Math.max(total - 1 - ringOneCount, 1);
+  const isInner = index <= ringOneCount;
+  const ringIndex = isInner ? index - 1 : index - 1 - ringOneCount;
+  const ringCount = isInner ? ringOneCount : ringTwoCount;
 
-  let ring = 1;
-  let ringIndex = index - innerStart;
-  let ringCount = ringOneCount;
-  let radiusX = 27;
-  let radiusY = 26;
-  let angleOffset = -90;
-
-  if (index >= outerStart) {
-    ring = 2;
-    ringIndex = index - outerStart;
-    ringCount = ringTwoCount || 1;
-    radiusX = 43;
-    radiusY = 40;
-    angleOffset = -78;
-  }
-
-  const angle = angleOffset + (360 / ringCount) * ringIndex;
+  const radiusX = isInner ? 25 : 42;
+  const radiusY = isInner ? 23 : 36;
+  const offset = isInner ? -90 : -72;
+  const angle = offset + (360 / ringCount) * ringIndex;
   const radians = angle * Math.PI / 180;
-  const wobble = ring === 1 ? 2.5 : 3.5;
 
   return {
-    x: 50 + Math.cos(radians) * radiusX + Math.sin(radians * 2) * wobble,
-    y: 50 + Math.sin(radians) * radiusY + Math.cos(radians * 1.5) * wobble,
-    ring
+    x: 50 + Math.cos(radians) * radiusX,
+    y: 52 + Math.sin(radians) * radiusY,
+    ring: isInner ? 1 : 2
   };
 }
 
 function renderBoard() {
   const sorted = getSortedTeams();
-
   board.innerHTML = `
     <div class="ring-guide ring-one" aria-hidden="true"></div>
     <div class="ring-guide ring-two" aria-hidden="true"></div>
@@ -126,9 +116,10 @@ function renderTile(team, index, total) {
   const isLeader = index === 0;
 
   return `
-    <article class="flag-node ${isLeader ? "is-leader" : ""} ring-${position.ring}" style="--x: ${position.x}%; --y: ${position.y}%; --size: ${size}vmin" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
+    <article class="flag-node ${isLeader ? "is-leader" : ""} ring-${position.ring}" style="--x:${position.x}%;--y:${position.y}%;--size:${size}vmin" tabindex="0" aria-label="${team.name}, ${money(team.total)} boosted">
       <div class="flag-visual" aria-hidden="true">
-        <img src="${getFlagUrl(team)}" alt="" loading="lazy" />
+        <img src="${getFlagUrl(team)}" alt="" loading="lazy" onerror="this.closest('.flag-node').classList.add('flag-failed')" />
+        <span>${team.name.slice(0, 2).toUpperCase()}</span>
       </div>
       <div class="flag-overlay">
         <div>
@@ -202,7 +193,7 @@ function addBoost() {
 }
 
 function escapeHtml(value) {
-  return value
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -245,7 +236,7 @@ closeLeaderboard.addEventListener("click", () => {
 
 document.querySelector("#reset-demo").addEventListener("click", () => {
   localStorage.removeItem(storageKey);
-  teams = structuredClone(defaultTeams);
+  teams = cloneTeams(defaultTeams);
   render();
 });
 
